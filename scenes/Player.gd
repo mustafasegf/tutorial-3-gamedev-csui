@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 export (float) var gravity_modifier = 10.0
-export (float) var jump_modifier = 5.0
+export (float) var jump_modifier = 4.0
 export (float) var speed = 400.0
 export (float) var crouch_modifier = 2.0
 export (float) var double_modifier = 3.0
@@ -24,6 +24,11 @@ const DOUBLETAP_DELAY = .25
 var doubletap_time = DOUBLETAP_DELAY
 var last_action: String = ""
 var isDoubleTapped = false
+
+var on_wall = false
+var wall_dir = 0  # -1 for left, 1 for right
+var can_jump = true
+
 
 func _process(delta):
 		doubletap_time -= delta
@@ -51,6 +56,7 @@ func _input(event:  InputEvent):
 		doubletap_time = DOUBLETAP_DELAY
 
 func get_input():
+	var is_wall_grabbing = false
 	var crouch: float = 1.0
 	var speed_modifier: float = 1.0
 	var rotate: float = rotate_modifier
@@ -64,6 +70,7 @@ func get_input():
 		jump = 0
 
 	if is_on_floor() and Input.is_action_just_pressed("ui_up"):
+		print(jump_speed, gravity)
 		velocity.y = jump_speed
 		jump += 1
 			
@@ -73,18 +80,20 @@ func get_input():
 		get_node("Timer").start()
 		timeout = true
 
-	if is_on_floor() and Input.is_action_pressed("ui_crouch"):
-		var sprite_size = $Sprite.texture.get_size()
-		
-		rotate /= 2.0
+	# Wall grab detection
+	if (Input.is_action_pressed('ui_left') or Input.is_action_pressed('ui_right')) and is_on_wall():
+		is_wall_grabbing = true
+		velocity.y = 0  # Stop vertical movement if grabbing onto a wall
+		jump = 0  # Reset jump count to allow for wall jump
+		# Wall Jump logic
+	if is_wall_grabbing and Input.is_action_just_pressed("ui_up"):
+		if Input.is_action_pressed('ui_right'):
+			velocity.x -= speed  # Push off wall to the left
+		elif Input.is_action_pressed('ui_left'):
+			velocity.x += speed  # Push off wall to the right
+		velocity.y = jump_speed
+		is_wall_grabbing = false  # Reset wall grabbing state after jumping
 
-#		var x = sin(rotate)
-#		var y = cos(rotate)
-#
-#		$Sprite.scale.y = default_scale * 0.7
-#		$Sprite.offset.y = sprite_size.y * 0.2
-		
-		crouch = crouch_modifier
 		
 	if isDoubleTapped:
 		speed_modifier = double_modifier
@@ -132,4 +141,3 @@ func create_trail():
 	trail.material.set_shader_param("flash_color", Color(r, g, b, 1.0))
 	
 	get_tree().get_root().add_child(trail)
-#	self.add_child(trail)
