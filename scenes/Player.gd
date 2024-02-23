@@ -7,7 +7,6 @@ export (float) var crouch_modifier = 2.0
 export (float) var double_modifier = 3.0
 export (float) var rotate_modifier = 10.0
 
-
 var gravity = speed * gravity_modifier
 var jump_speed = -1 * gravity / jump_modifier
 var rotate_deg: float = 0.0;
@@ -119,6 +118,7 @@ func create_trail():
 	trail.texture = $Sprite.texture
 	trail.scale = $Sprite.scale
 	trail.frame = $Sprite.frame
+	trail.z_index = -1
 	trail.show_behind_parent = true
 	var values = [0, 0.5, 1]
 	var r = 0
@@ -132,3 +132,4 @@ func create_trail():
 	trail.material.set_shader_param("flash_color", Color(r, g, b, 1.0))
 	
 	get_tree().get_root().add_child(trail)
+#	self.add_child(trail)
