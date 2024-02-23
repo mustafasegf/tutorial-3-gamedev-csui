@@ -70,7 +70,6 @@ func get_input():
 		jump = 0
 
 	if is_on_floor() and Input.is_action_just_pressed("ui_up"):
-		print(jump_speed, gravity)
 		velocity.y = jump_speed
 		jump += 1
 			
