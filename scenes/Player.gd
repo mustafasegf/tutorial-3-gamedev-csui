@@ -2,12 +2,15 @@ extends KinematicBody2D
 
 export (float) var gravity_modifier = 10.0
 export (float) var jump_modifier = 5.0
-export (float) var speed = 400
+export (float) var speed = 400.0
 export (float) var crouch_modifier = 2.0
-export (float) var double_modifier = 2.0
+export (float) var double_modifier = 3.0
+export (float) var rotate_modifier = 10.0
+
 
 var gravity = speed * gravity_modifier
 var jump_speed = -1 * gravity / jump_modifier
+var rotate: float = 0.0;
 
 const UP = Vector2(0,-1)
 var velocity = Vector2()
@@ -31,7 +34,6 @@ func _input(event:  InputEvent):
 	if isDoubleTapped and (event.is_action_released("ui_right") or event.is_action_released("ui_left")):
 		last_action = ""
 		isDoubleTapped = false
-		print("released")
 		return
 
 	if event.is_action_pressed("ui_right"):
@@ -42,7 +44,6 @@ func _input(event:  InputEvent):
 		return
 		
 	if last_action == action_name and action_name != "" and doubletap_time >= 0:
-		print("DOUBLETAP: ", action_name)
 		isDoubleTapped = true
 	else:
 			last_action = action_name
@@ -51,41 +52,46 @@ func _input(event:  InputEvent):
 		doubletap_time = DOUBLETAP_DELAY
 
 func get_input():
-		var crouch: float = 1.0
-		var speed_modifier: float = 1.0
-		velocity.x = 0
+	var crouch: float = 1.0
+	var speed_modifier: float = 1.0
+	velocity.x = 0
 		
+	$Sprite.scale.y = default_scale
+	$Sprite.offset.y = default_offset
 		
-		$Sprite.scale.y = default_scale
-		$Sprite.offset.y = default_offset
-		
-		if is_on_floor():
-			jump = 0
+	if is_on_floor():
+		jump = 0
 
-		if is_on_floor() and Input.is_action_just_pressed("ui_up"):
-			velocity.y = jump_speed
-			jump += 1
+	if is_on_floor() and Input.is_action_just_pressed("ui_up"):
+		velocity.y = jump_speed
+		jump += 1
 			
-		if not timeout and jump <= 2 and Input.is_action_just_pressed("ui_up"):
-			jump += 1
-			velocity.y = jump_speed
-			get_node("Timer").start()
-			timeout = true
+	if not timeout and jump <= 2 and Input.is_action_just_pressed("ui_up"):
+		jump += 1
+		velocity.y = jump_speed
+		get_node("Timer").start()
+		timeout = true
 
-		if is_on_floor() and Input.is_action_pressed("ui_crouch"):
-			var sprite_size = $Sprite.texture.get_size().y
+	if is_on_floor() and Input.is_action_pressed("ui_crouch"):
+		var sprite_size = $Sprite.texture.get_size().y
 
-			$Sprite.scale.y = default_scale * 0.7
-			$Sprite.offset.y = sprite_size * 0.2
-			crouch = crouch_modifier
+		$Sprite.scale.y = default_scale * 0.7
+		$Sprite.offset.y = sprite_size * 0.2
+		crouch = crouch_modifier
 		
-		if isDoubleTapped:
-			speed_modifier = double_modifier
+	if isDoubleTapped:
+		speed_modifier = double_modifier
+		create_trail()
 
-		if Input.is_action_pressed('ui_right'):
-				velocity.x += speed * speed_modifier / crouch
-		if Input.is_action_pressed('ui_left'):
-				velocity.x -= speed * speed_modifier / crouch
+	if Input.is_action_pressed('ui_right'):
+		velocity.x += speed * speed_modifier / crouch
+		rotate += rotate_modifier
+				
+	if Input.is_action_pressed('ui_left'):
+		velocity.x -= speed * speed_modifier / crouch
+		rotate -= rotate_modifier
+		
+	$Sprite.rotation_degrees = rotate
 
 func _physics_process(delta):
 		velocity.y += delta * gravity
@@ -94,3 +100,27 @@ func _physics_process(delta):
 
 func _on_Timer_timeout() -> void:
 	timeout = false
+
+func create_trail():
+	var trail = preload("res://scenes/Trail.tscn").instance()
+	
+	trail.global_position = $Sprite.global_position
+	trail.flip_h = $Sprite.flip_h
+	trail.flip_v = $Sprite.flip_v
+	trail.rotation_degrees = $Sprite.rotation_degrees
+	trail.texture = $Sprite.texture
+	trail.scale = $Sprite.scale
+	trail.frame = $Sprite.frame
+	trail.show_behind_parent = true
+	var values = [0, 0.5, 1]
+	var r = 0
+	var g = 0
+	var b = 0
+	while r == 0 and g == 0 and b == 0:
+		r = values[randi() % values.size()]
+		g = values[randi() % values.size()]
+		b = values[randi() % values.size()]
+		
+	trail.material.set_shader_param("flash_color", Color(r, g, b, 1.0))
+	
+	get_tree().get_root().add_child(trail)
