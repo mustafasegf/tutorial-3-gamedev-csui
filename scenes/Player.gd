@@ -10,7 +10,7 @@ export (float) var rotate_modifier = 10.0
 
 var gravity = speed * gravity_modifier
 var jump_speed = -1 * gravity / jump_modifier
-var rotate: float = 0.0;
+var rotate_deg: float = 0.0;
 
 const UP = Vector2(0,-1)
 var velocity = Vector2()
@@ -54,6 +54,8 @@ func _input(event:  InputEvent):
 func get_input():
 	var crouch: float = 1.0
 	var speed_modifier: float = 1.0
+	var rotate: float = rotate_modifier
+	
 	velocity.x = 0
 		
 	$Sprite.scale.y = default_scale
@@ -73,10 +75,16 @@ func get_input():
 		timeout = true
 
 	if is_on_floor() and Input.is_action_pressed("ui_crouch"):
-		var sprite_size = $Sprite.texture.get_size().y
+		var sprite_size = $Sprite.texture.get_size()
+		
+		rotate /= 2.0
 
-		$Sprite.scale.y = default_scale * 0.7
-		$Sprite.offset.y = sprite_size * 0.2
+#		var x = sin(rotate)
+#		var y = cos(rotate)
+#
+#		$Sprite.scale.y = default_scale * 0.7
+#		$Sprite.offset.y = sprite_size.y * 0.2
+		
 		crouch = crouch_modifier
 		
 	if isDoubleTapped:
@@ -85,13 +93,13 @@ func get_input():
 
 	if Input.is_action_pressed('ui_right'):
 		velocity.x += speed * speed_modifier / crouch
-		rotate += rotate_modifier
+		rotate_deg += rotate
 				
 	if Input.is_action_pressed('ui_left'):
 		velocity.x -= speed * speed_modifier / crouch
-		rotate -= rotate_modifier
+		rotate_deg -= rotate
 		
-	$Sprite.rotation_degrees = rotate
+	$Sprite.rotation_degrees = rotate_deg
 
 func _physics_process(delta):
 		velocity.y += delta * gravity
