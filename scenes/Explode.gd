@@ -17,7 +17,7 @@ func initializer(sprite: Texture):
 	amount = sprite.get_width() * sprite.get_height()
 
 	emitting = true
-	
 	$AudioStreamPlayer2D.stream.loop = false
 	$AudioStreamPlayer2D.play()
+	
 	

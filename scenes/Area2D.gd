@@ -18,4 +18,11 @@ func _on_Area2D_body_entered(body):
 		root.add_child(explode)
 		player.queue_free()
 		
+		var canvas: CanvasLayer = $"../CanvasLayer"
+		canvas.follow_viewport_enable = true
+		
+		var animation: AnimationPlayer = $"../CanvasLayer/AnimationPlayer"
+		
+		animation.play("Shockwave")
+		
 		
