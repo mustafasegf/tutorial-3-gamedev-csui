@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/ligma.mp3-77ac501b464ae8818bc25ab5c613d59f.mp3str"
+
+[deps]
+
+source_file="res://assets/ligma.mp3"
+dest_files=[ "res://.import/ligma.mp3-77ac501b464ae8818bc25ab5c613d59f.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

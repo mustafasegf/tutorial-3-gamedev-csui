@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/ligma1.ogg-68c84afe0cc8db0b18c10b76b7cb8e29.oggstr"
+
+[deps]
+
+source_file="res://assets/ligma1.ogg"
+dest_files=[ "res://.import/ligma1.ogg-68c84afe0cc8db0b18c10b76b7cb8e29.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

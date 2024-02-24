@@ -116,8 +116,10 @@ func _physics_process(delta):
 func _on_Timer_timeout() -> void:
 	timeout = false
 
+var trail_scene = preload("res://scenes/Trail.tscn")
+
 func create_trail():
-	var trail = preload("res://scenes/Trail.tscn").instance()
+	var trail = trail_scene.instance()
 	
 	trail.global_position = $Sprite.global_position
 	trail.flip_h = $Sprite.flip_h
@@ -140,3 +142,6 @@ func create_trail():
 	trail.material.set_shader_param("flash_color", Color(r, g, b, 1.0))
 	
 	get_tree().get_root().add_child(trail)
+
+
+

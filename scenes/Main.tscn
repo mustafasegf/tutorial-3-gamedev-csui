@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://assets/stone-64.png" type="Texture" id=1]
 [ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/Area2D.gd" type="Script" id=3]
+[ext_resource path="res://assets/fasilkom.png" type="Texture" id=4]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 64, 32, 0, 32, 0, 32, 64, 32 )
@@ -40,9 +42,13 @@ points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 
 [sub_resource type="RectangleShape2D" id=4]
 
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 88, 80 )
+
 [node name="Root" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 680, 112 )
 offset = Vector2( 0, 148 )
 current = true
 limit_left = 0
@@ -53,7 +59,7 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( -40, 0 )
+position = Vector2( 680, 112 )
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
 remote_path = NodePath("../../Camera2D")
@@ -67,3 +73,16 @@ tile_data = PoolIntArray( -196609, 0, 0, -262144, 0, 0, -262143, 0, 0, -262142, 
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TileMap/CollisionShape2D"]
 shape = SubResource( 4 )
+
+[node name="Area2D" type="Area2D" parent="."]
+script = ExtResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Area2D"]
+position = Vector2( 1000, 432 )
+texture = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 1008, 424 )
+shape = SubResource( 5 )
+
+[connection signal="body_entered" from="Area2D" to="Area2D" method="_on_Area2D_body_entered"]
