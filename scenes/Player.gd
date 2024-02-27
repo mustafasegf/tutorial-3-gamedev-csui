@@ -72,6 +72,8 @@ func get_input():
 	if is_on_floor() and Input.is_action_just_pressed("ui_up"):
 		velocity.y = jump_speed
 		jump += 1
+		get_node("Timer").start()
+		timeout = true
 			
 	if not timeout and jump <= 2 and Input.is_action_just_pressed("ui_up"):
 		jump += 1
