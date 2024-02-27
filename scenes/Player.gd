@@ -143,5 +143,3 @@ func create_trail():
 	
 	get_tree().get_root().add_child(trail)
 
-
-
