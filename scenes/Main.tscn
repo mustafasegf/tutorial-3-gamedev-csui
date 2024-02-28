@@ -103,7 +103,7 @@ extents = Vector2( 88.5, 120.5 )
 [node name="Root" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2( 1056, -208 )
+position = Vector2( -248, 248 )
 current = true
 limit_left = 0
 limit_top = -192
@@ -113,7 +113,7 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 1264, -344 )
+position = Vector2( -40, 112 )
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
 position = Vector2( -208, 136 )
@@ -162,6 +162,7 @@ script = ExtResource( 7 )
 [node name="Sprite" type="Sprite" parent="WinArea"]
 position = Vector2( 1568, -64 )
 scale = Vector2( 0.214286, 0.214286 )
+z_index = -1
 texture = ExtResource( 8 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WinArea"]
